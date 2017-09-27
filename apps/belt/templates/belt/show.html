@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <title>Book Reviews</title>
+</head>
+<body>
+    <a href="/books">Home</a>
+    <a href="/logout">Logout</a>
+    <h1>{{book.title}}</h1>
+    <p>Author: {{author.name}}</p>
+    <h2>Reviews:</h2>
+    {% for review in reviews %}
+    <p>Rating:</p>
+        {% for x in range %}
+            {% if x < review.rating %}
+            <img src="../../static/belt/yellow-star.png" width='50' height='50' alt="filled star">
+            {% else %}
+            <img src="../../static/belt/white-star.png" width='50' height='50' alt="unfilled star">
+            {% endif %}
+        {% endfor %}
+        {% for user in all_users %}
+            {% if user == review.reviewer %}
+            <p><a href="users/{{user.id}}">{{user.first_name}}</a> says: {{review.comment}}</p>
+            {% endif %}
+        {% endfor %}
+    <p>Posted on {{ review.created_at|date:"M d, Y"}}</p>
+        {% if review.reviewer == current %}
+        <form action="/destroy/{{review.id}}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="delete">
+        </form>
+        {% endif %}
+    {% endfor %}
+    <form action="/books/{{book.id}}" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <p>
+            {{ field.errors }}
+            {{ field.label_tag }} {{ field }}
+        </p>
+        {% endfor %}
+        <input type="submit" value="Submit Review">
+    </form>
+</body>
+</html>
